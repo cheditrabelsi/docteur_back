@@ -15,8 +15,8 @@ public class MedecinService {
 		this.repo = repo;
 	}
 
-	public Medecin getMedecin(String email,String pwd) {
-	    return this.repo.findByEmailAndMdp(email, pwd);
+	public Medecin getMedecin(String email) {
+	    return this.repo.findByEmail(email);
 	}
 	public int save(Medecin u) {
 		return this.repo.save(u).getId();

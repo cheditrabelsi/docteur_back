@@ -11,8 +11,8 @@ public class PatientService {
 		super();
 		this.repo = repo;
 	}
-	public Patient getPatient(String email,String pwd) {
-		return this.repo.findByEmailAndMdp(email, pwd);
+	public Patient getPatient(String email) {
+		return this.repo.findByEmail(email);
 	}
 	public int save(Patient u) {
 		return this.repo.save(u).getId();

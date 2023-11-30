@@ -25,10 +25,10 @@ public class MedecinController {
 	private MedecinService medecinserv;
 	@Autowired
 	private BCryptPasswordEncoder BCryptPasswordEncoder;
-	@GetMapping("/getMedecin/{email}/{pwd}")
-	public ResponseEntity<Object> getMedecin(@PathVariable String email,@PathVariable String pwd) {
+	@GetMapping("/getMedecin/{email}")
+	public ResponseEntity<Object> getMedecin(@PathVariable String email) {
 	    try {
-	        Medecin medecin = this.medecinserv.getMedecin(email,pwd);
+	        Medecin medecin = this.medecinserv.getMedecin(email);
 	        if (medecin != null) {
 	            return new ResponseEntity<>(medecin, HttpStatus.OK);
 	        } else {

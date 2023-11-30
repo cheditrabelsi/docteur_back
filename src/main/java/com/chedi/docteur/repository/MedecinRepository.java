@@ -8,5 +8,5 @@ import com.chedi.docteur.entities.Medecin;
 import com.chedi.docteur.entities.Patient;
 
 public interface MedecinRepository extends JpaRepository<Medecin, Integer> {
-	Medecin findByEmailAndMdp(String email,String pwd);
+	Medecin findByEmail(String email);
 }

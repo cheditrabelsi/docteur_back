@@ -1,5 +1,4 @@
 package com.chedi.docteur.contoller;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +25,10 @@ public class PatientController {
 	private PatientService patientserv;
 	@Autowired
 	private BCryptPasswordEncoder BCryptPasswordEncoder;
-	@GetMapping("/getPatient/{email}/{pwd}")
-	public ResponseEntity<Object> getPatient(@PathVariable String email,@PathVariable String pwd) {
+	@GetMapping("/getPatient/{email}")
+	public ResponseEntity<Object> getPatient(@PathVariable String email) {
 	    try {
-	     pwd=this.BCryptPasswordEncoder.encode(pwd);
-	        Patient patient = this.patientserv.getPatient(email,pwd);
+	        Patient patient = this.patientserv.getPatient(email);
 	        if (patient != null) {
 	            return new ResponseEntity<>(patient, HttpStatus.OK);
 	        } else {

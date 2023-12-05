@@ -1,6 +1,11 @@
 package com.chedi.docteur.contoller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +26,25 @@ import com.chedi.docteur.services.UtilisateurService;
 public class UtilisateurController {
 	
 	@Autowired
-	private UtilisateurService userserv;
-	private MedecinService medecinserv;
-	private PatientService patientserv; 
-	
-	@GetMapping("/getUtilisateur/{id}")
-	public Utilisateur getUtilisateur(@PathVariable Integer id) {
-		return this.userserv.getUtilisateur(id);
+	private UtilisateurService userserv; 
+	@Autowired
+	private BCryptPasswordEncoder BCryptPasswordEncoder;
+	@GetMapping("/login/{email}/{mdp}")
+	public ResponseEntity<Object> login(@PathVariable String email, @PathVariable String mdp) {
+	    try {
+	        Optional<Utilisateur> user = this.userserv.getUtilisateur(email);
+	        if (user.isPresent()) {
+	            if (BCryptPasswordEncoder.matches(mdp, user.get().getMdp())) {
+	                return new ResponseEntity<>(user.get(), HttpStatus.OK);
+	            } else {
+	                return new ResponseEntity<>("Password not correct", HttpStatus.UNAUTHORIZED);
+	            }
+	        } else {
+	            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
 }

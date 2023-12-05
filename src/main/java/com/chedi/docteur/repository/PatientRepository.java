@@ -7,4 +7,5 @@ import com.chedi.docteur.entities.Patient;
 
 public interface PatientRepository extends JpaRepository<Patient, Integer> {
 	Patient findByEmail(String email);
+	boolean existsByEmail(String email);
 }

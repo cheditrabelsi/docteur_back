@@ -16,6 +16,7 @@ import com.chedi.docteur.entities.Patient;
 import com.chedi.docteur.entities.Utilisateur;
 import com.chedi.docteur.services.MedecinService;
 import com.chedi.docteur.services.PatientService;
+import com.chedi.docteur.services.UtilisateurService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -23,6 +24,8 @@ import com.chedi.docteur.services.PatientService;
 public class PatientController {
 	@Autowired
 	private PatientService patientserv;
+	@Autowired
+	private UtilisateurService userserv;
 	@Autowired
 	private BCryptPasswordEncoder BCryptPasswordEncoder;
 	@GetMapping("/getPatient/{email}")
@@ -42,16 +45,21 @@ public class PatientController {
 	@PostMapping("/add")
 	public ResponseEntity<Object> register(@RequestBody Patient p) {
 	    try {
-	        String hashedPassword = this.BCryptPasswordEncoder.encode(p.getMdp());
-	        p.setMdp(hashedPassword);
-	        
-	        if (patientserv.save(p) > 0) {
-	            return ResponseEntity.ok("patient was saved");
+	        if (!userserv.exist(p.getEmail())) {
+	            String hashedPassword = this.BCryptPasswordEncoder.encode(p.getMdp());
+	            p.setMdp(hashedPassword);
+
+	            if (patientserv.save(p) > 0) {
+	                return ResponseEntity.ok("Patient was saved");
+	            } else {
+	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while registration");
+	            }
 	        } else {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while registration");
+	            return new ResponseEntity<>("Patient with this email already exists", HttpStatus.CONFLICT);
 	        }
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
 	    }
 	}
+
 }

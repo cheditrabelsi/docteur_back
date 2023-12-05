@@ -1,4 +1,4 @@
-package com.chedi.docteur.configuration;
+package com.chedi.docteur.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

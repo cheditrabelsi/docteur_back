@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;	
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -24,15 +24,20 @@ public class Medecin extends Utilisateur {
 	private float latitude;
 @Column
 	private float prixvisite;
-@Column
-	private String specialite;
 @ManyToMany
 @JoinTable(
 		name="lesdateTravailMedecin",
 				joinColumns =   @JoinColumn(name="medecin_id"),
 				inverseJoinColumns =  @JoinColumn(name="datetravail_id"))
 private List<DateDeTravail> lesDatedetravail;
-
+@ManyToMany
+@JoinTable(
+    name = "medecin_specialite",
+    joinColumns = @JoinColumn(name = "medecin_id"),
+    inverseJoinColumns = @JoinColumn(name = "specialite_id")
+)
+@JsonProperty("specialites")
+private List<Specialite> specialites;
 public float getLongitude() {
 	return longitude;
 }
@@ -50,12 +55,6 @@ public float getPrixvisite() {
 }
 public void setPrixvisite(float prixvisite) {
 	this.prixvisite = prixvisite;
-}
-public String getSpecialite() {
-	return specialite;
-}
-public void setSpecialite(String specialite) {
-	this.specialite = specialite;
 }
 public List<DateDeTravail> getLesDatedetravail() {
 	return lesDatedetravail;

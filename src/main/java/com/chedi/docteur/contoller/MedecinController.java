@@ -14,19 +14,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.chedi.docteur.entities.Medecin;
 import com.chedi.docteur.services.MedecinService;
+import com.chedi.docteur.services.UtilisateurService;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200",allowCredentials = "true")
 @RestController
 @RequestMapping("medecin")
 public class MedecinController {
 	@Autowired
 	private MedecinService medecinserv;
 	@Autowired
+	private UtilisateurService userserv;
+	@Autowired
 	private BCryptPasswordEncoder BCryptPasswordEncoder;
-	@GetMapping("/getMedecin/{email}")
-	public ResponseEntity<Object> getMedecin(@PathVariable String email) {
+	@GetMapping("/login/{email}")
+	public ResponseEntity<Object> login(@PathVariable String email) {
 	    try {
 	        Medecin medecin = this.medecinserv.getMedecin(email);
 	        if (medecin != null) {
@@ -40,17 +43,21 @@ public class MedecinController {
 	}
 	@PostMapping("/add")
 	public ResponseEntity<Object> register(@RequestBody Medecin m) {
-	    try {
-	        String hashedPassword = this.BCryptPasswordEncoder.encode(m.getMdp());
-	        m.setMdp(hashedPassword);
-	        
-	        if (medecinserv.save(m) > 0) {
-	            return ResponseEntity.ok("medecin was saved");
-	        } else {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while registration");
-	        }
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
-	    }
-	}
+		   try {
+		        if (!userserv.exist(m.getEmail())) {
+		            String hashedPassword = this.BCryptPasswordEncoder.encode(m.getMdp());
+		            m.setMdp(hashedPassword);
+		            
+		            if (medecinserv.save(m) > 0) {
+		                return ResponseEntity.ok("medecin was saved");
+		            } else {
+		                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while registration");
+		            }
+		        } else {
+		            return new ResponseEntity<>("medecin with this email already exists", HttpStatus.CONFLICT);
+		        }
+		    } catch (Exception e) {
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+		    }
+		}
 }

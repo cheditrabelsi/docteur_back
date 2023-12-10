@@ -1,13 +1,16 @@
 package com.chedi.docteur.entities;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,30 +25,55 @@ public class Rendezvous {
 	@Id
 	@GeneratedValue
 private Integer id_rendezvous;
+	private Date dateRendezVous;
 	@Column
-	private Date date_rendezvous;
-	@Column
-	private int heure;
+	private Time heure;
 	@Column
 	private String validation;
-	@OneToMany(mappedBy = "rendezvous")
-	private List<Patient_rendezvous> lesPatients;
+	 private String observation;
+	    private String ordonance;
+	@ManyToOne
+    @JoinColumn(name = "medecin_id")
+    private Medecin medecin;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
+    
+	public Rendezvous() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public Rendezvous(Integer id_rendezvous, Date dateRendezVous, Time heure, String validation, String observation,
+			String ordonance, Medecin medecin, Patient patient) {
+		super();
+		this.id_rendezvous = id_rendezvous;
+		this.dateRendezVous = dateRendezVous;
+		this.heure = heure;
+		this.validation = validation;
+		this.observation = observation;
+		this.ordonance = ordonance;
+		this.medecin = medecin;
+		this.patient = patient;
+	}
 	public Integer getId_rendezvous() {
 		return id_rendezvous;
 	}
 	public void setId_rendezvous(Integer id_rendezvous) {
 		this.id_rendezvous = id_rendezvous;
 	}
-	public Date getDate_rendezvous() {
-		return date_rendezvous;
+	
+	
+	public Date getDateRendezVous() {
+		return dateRendezVous;
 	}
-	public void setDate_rendezvous(Date date_rendezvous) {
-		this.date_rendezvous = date_rendezvous;
+	public void setDateRendezVous(Date dateRendezVous) {
+		this.dateRendezVous = dateRendezVous;
 	}
-	public int getHeure() {
+	public Time getHeure() {
 		return heure;
 	}
-	public void setHeure(int heure) {
+	public void setHeure(Time heure) {
 		this.heure = heure;
 	}
 	public String getValidation() {
@@ -54,11 +82,29 @@ private Integer id_rendezvous;
 	public void setValidation(String validation) {
 		this.validation = validation;
 	}
-	public List<Patient_rendezvous> getLesPatients() {
-		return lesPatients;
+	public Medecin getMedecin() {
+		return medecin;
 	}
-	public void setLesPatients(List<Patient_rendezvous> lesPatients) {
-		this.lesPatients = lesPatients;
+	public void setMedecin(Medecin medecin) {
+		this.medecin = medecin;
+	}
+	public Patient getPatient() {
+		return patient;
+	}
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+	public String getObservation() {
+		return observation;
+	}
+	public void setObservation(String observation) {
+		this.observation = observation;
+	}
+	public String getOrdonance() {
+		return ordonance;
+	}
+	public void setOrdonance(String ordonance) {
+		this.ordonance = ordonance;
 	}
 	
 }

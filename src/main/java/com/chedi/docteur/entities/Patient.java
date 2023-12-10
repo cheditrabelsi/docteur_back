@@ -25,8 +25,8 @@ public class Patient extends Utilisateur{
 	private Date date_de_naissance;
 	@Column
 	private String genre;
-	@OneToMany(mappedBy = "patient")
-	private List<Patient_rendezvous> LesRendezvous;
+	@ManyToMany(mappedBy = "patients")
+    private List<Medecin> medecins;
 	public String getCnss() {
 		return cnss;
 	}
@@ -45,11 +45,13 @@ public class Patient extends Utilisateur{
 	public void setGenre(String genre) {
 		this.genre = genre;
 	}
-	public List<Patient_rendezvous> getLesRendezvous() {
-		return LesRendezvous;
+	public List<Medecin> getMedecins() {
+		return medecins;
 	}
-	public void setLesRendezvous(List<Patient_rendezvous> lesRendezvous) {
-		LesRendezvous = lesRendezvous;
-	} 
+	public void setMedecins(List<Medecin> medecins) {
+		this.medecins = medecins;
+	}
+	
+	
 	
 }

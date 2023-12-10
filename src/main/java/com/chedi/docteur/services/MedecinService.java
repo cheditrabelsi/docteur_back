@@ -1,5 +1,7 @@
 package com.chedi.docteur.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.chedi.docteur.entities.Medecin;
@@ -23,5 +25,8 @@ public class MedecinService {
 	}
 	public boolean exist(String email) {
 		return this.repo.existsByEmail(email);
+	}
+	public List<Medecin> getAll(){
+		return this.repo.findAll();
 	}
 }

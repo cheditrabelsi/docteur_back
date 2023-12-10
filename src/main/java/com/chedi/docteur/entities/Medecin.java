@@ -8,27 +8,32 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinColumns;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;	
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;	
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Medecin extends Utilisateur {
 @Column
 	private float longitude;
 @Column
 	private float latitude;
 @Column
-	private float prixvisite;
-@ManyToMany
-@JoinTable(
-		name="lesdateTravailMedecin",
-				joinColumns =   @JoinColumn(name="medecin_id"),
-				inverseJoinColumns =  @JoinColumn(name="datetravail_id"))
+private String image;
+@Column
+private float prixvisite;
+@OneToMany(mappedBy = "medecin") 
+@JsonManagedReference
 private List<DateDeTravail> lesDatedetravail;
 @ManyToMany
 @JoinTable(
@@ -36,8 +41,15 @@ private List<DateDeTravail> lesDatedetravail;
     joinColumns = @JoinColumn(name = "medecin_id"),
     inverseJoinColumns = @JoinColumn(name = "specialite_id")
 )
-@JsonProperty("specialites")
+@JsonIgnoreProperties("medecins")
 private List<Specialite> specialites;
+@ManyToMany
+@JoinTable(
+    name = "rendezvous",
+    joinColumns = @JoinColumn(name = "medecin_id"),
+    inverseJoinColumns = @JoinColumn(name = "patient_id")
+)
+private List<Patient> patients;
 public float getLongitude() {
 	return longitude;
 }
@@ -61,6 +73,31 @@ public List<DateDeTravail> getLesDatedetravail() {
 }
 public void setLesDatedetravail(List<DateDeTravail> lesDatedetravail) {
 	this.lesDatedetravail = lesDatedetravail;
+}
+
+public List<Specialite> getSpecialites() {
+	return specialites;
+}
+public void setSpecialites(List<Specialite> specialites) {
+	this.specialites = specialites;
+}
+public List<Patient> getPatients() {
+	return patients;
+}
+public void setPatients(List<Patient> patients) {
+	this.patients = patients;
+}
+public String getImage() {
+	return image;
+}
+public void setImage(String image) {
+	this.image = image;
+}
+@Override
+public String toString() {
+	return "Medecin [longitude=" + longitude + ", latitude=" + latitude + ", prixvisite=" + prixvisite
+			+ ", lesDatedetravail=" + lesDatedetravail + ", specialites=" + specialites + ", patients=" + patients
+			+ "]";
 }
 
 }

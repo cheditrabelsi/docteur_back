@@ -1,5 +1,7 @@
 package com.chedi.docteur.contoller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +30,23 @@ public class MedecinController {
 	private UtilisateurService userserv;
 	@Autowired
 	private BCryptPasswordEncoder BCryptPasswordEncoder;
-	@GetMapping("/login/{email}")
+	@GetMapping("/getMedecin/{email}")
 	public ResponseEntity<Object> login(@PathVariable String email) {
 	    try {
 	        Medecin medecin = this.medecinserv.getMedecin(email);
+	        if (medecin != null) {
+	            return new ResponseEntity<>(medecin, HttpStatus.OK);
+	        } else {
+	            return new ResponseEntity<>("Medecin not found", HttpStatus.NOT_FOUND);
+	        }
+	    } catch (Exception e) {
+	        return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+	@GetMapping("/getAll")
+	public ResponseEntity<Object> login() {
+	    try {
+	        List<Medecin> medecin = this.medecinserv.getAll();
 	        if (medecin != null) {
 	            return new ResponseEntity<>(medecin, HttpStatus.OK);
 	        } else {

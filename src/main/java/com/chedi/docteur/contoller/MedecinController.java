@@ -1,6 +1,8 @@
 package com.chedi.docteur.contoller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,26 +33,36 @@ public class MedecinController {
 	@Autowired
 	private BCryptPasswordEncoder BCryptPasswordEncoder;
 	@GetMapping("/getMedecin/{email}")
-	public ResponseEntity<Object> login(@PathVariable String email) {
+	public ResponseEntity<Object> getMedecin(@PathVariable String email) {
 	    try {
 	        Medecin medecin = this.medecinserv.getMedecin(email);
 	        if (medecin != null) {
-	            return new ResponseEntity<>(medecin, HttpStatus.OK);
+	        	Map<String, String> successResponse = new HashMap<>();
+                successResponse.put("message", "user exist");
+
+                return new ResponseEntity<>(successResponse, HttpStatus.OK);
 	        } else {
-	            return new ResponseEntity<>("Medecin not found", HttpStatus.NOT_FOUND);
+	        	Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "User not found");
+
+                return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 	        }
 	    } catch (Exception e) {
-	        return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	    	Map<String, String> errorResponse = new HashMap<String, String>();
+	        errorResponse.put("error", "An error occurred");
+	        errorResponse.put("message", e.getMessage());
+	        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
+
 	}
 	@GetMapping("/getAll")
-	public ResponseEntity<Object> login() {
+	public ResponseEntity<Object> getAll() {
 	    try {
 	        List<Medecin> medecin = this.medecinserv.getAll();
 	        if (medecin != null) {
 	            return new ResponseEntity<>(medecin, HttpStatus.OK);
 	        } else {
-	            return new ResponseEntity<>("Medecin not found", HttpStatus.NOT_FOUND);
+	            return new ResponseEntity<>("List not found", HttpStatus.NOT_FOUND);
 	        }
 	    } catch (Exception e) {
 	        return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,13 +75,20 @@ public class MedecinController {
 		            String hashedPassword = this.BCryptPasswordEncoder.encode(m.getMdp());
 		            m.setMdp(hashedPassword);
 		            
-		            if (medecinserv.save(m) > 0) {
-		                return ResponseEntity.ok("medecin was saved");
+		            if (medecinserv.save(m) !="null") {
+		            	Map<String, String> successResponse = new HashMap<>();
+		                successResponse.put("message", "medecin add with succes");
+		                return new ResponseEntity<>(successResponse, HttpStatus.OK);
 		            } else {
-		                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while registration");
+		            	System.out.print(medecinserv.save(m));
+		            	Map<String, String> successResponse = new HashMap<>();
+		                successResponse.put("message", "medecin not added");
+		                return new ResponseEntity<>(successResponse, HttpStatus.BAD_REQUEST);
 		            }
 		        } else {
-		            return new ResponseEntity<>("medecin with this email already exists", HttpStatus.CONFLICT);
+		        	Map<String, String> successResponse = new HashMap<>();
+	                successResponse.put("message", "email already exist");
+	                return new ResponseEntity<>(successResponse, HttpStatus.CONFLICT);
 		        }
 		    } catch (Exception e) {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());

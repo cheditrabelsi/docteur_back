@@ -20,8 +20,8 @@ public class MedecinService {
 	public Medecin getMedecin(String email) {
 	    return this.repo.findByEmail(email);
 	}
-	public int save(Medecin u) {
-		return this.repo.save(u).getId();
+	public String save(Medecin u) {
+		return this.repo.save(u).getEmail();
 	}
 	public boolean exist(String email) {
 		return this.repo.existsByEmail(email);

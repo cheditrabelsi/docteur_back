@@ -1,6 +1,8 @@
 	package com.chedi.docteur.entities;
 	
 	
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,33 +20,40 @@ import jakarta.persistence.MappedSuperclass;
 	public class Utilisateur{
 		
 		@Id
-		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		private Integer id;
-		@Column(unique = true)
-		private String email;
-		@Column
-		private String mdp;
-		@Column
-		private String nom;
-		@Column
-		private String prenom;
-		@Column
-		private int tel;
-		private String role;
-		public Utilisateur() {
-			super();
-			// TODO Auto-generated constructor stub
-		}
-		public Utilisateur(int id, String nom, String prenom, String email, String mdp, int tel, String role) {
-			super();
-			this.id = id;
-			this.nom = nom;
-			this.prenom = prenom;
-			this.email = email;
-			this.mdp = mdp;
-			this.tel = tel;
-			this.role = role;
-		}
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Integer id;
+
+	    @Column(unique = true)
+	    @JsonProperty("email")
+	    private String email;
+
+	    @Column
+	    private String mdp;
+
+	    @Column
+	    private String nom;
+
+	    @Column
+	    private String prenom;
+
+	    @Column
+	    private String tel;
+
+	    private String role;
+
+	    public Utilisateur() {
+	        // Default constructor
+	    }
+
+	    public Utilisateur(Integer id, String nom, String prenom, String email, String mdp, String tel, String role) {
+	        this.id = id;
+	        this.nom = nom;
+	        this.prenom = prenom;
+	        this.email = email;
+	        this.mdp = mdp;
+	        this.tel = tel;
+	        this.role = role;
+	    }
 		public int getId() {
 			return id;
 		}
@@ -75,10 +84,10 @@ import jakarta.persistence.MappedSuperclass;
 		public void setMdp(String mdp) {
 			this.mdp = mdp;
 		}
-		public int getTel() {
+		public String getTel() {
 			return tel;
 		}
-		public void setTel(int tel) {
+		public void setTel(String tel) {
 			this.tel = tel;
 		}
 		public String getRole() {

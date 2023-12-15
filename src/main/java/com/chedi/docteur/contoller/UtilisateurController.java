@@ -1,5 +1,7 @@
 package com.chedi.docteur.contoller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +37,29 @@ public class UtilisateurController {
 	        Optional<Utilisateur> user = this.userserv.getUtilisateur(email);
 	        if (user.isPresent()) {
 	            if (BCryptPasswordEncoder.matches(mdp, user.get().getMdp())) {
-	                return new ResponseEntity<>(user.get(), HttpStatus.OK);
+	                Map<String, String> successResponse = new HashMap<>();
+	                successResponse.put("message", "Login successful");
+
+	                return new ResponseEntity<>(successResponse, HttpStatus.OK);
 	            } else {
-	                return new ResponseEntity<>("Password not correct", HttpStatus.UNAUTHORIZED);
+	                Map<String, String> errorResponse = new HashMap<>();
+	                errorResponse.put("message", "Password not correct");
+
+	                return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 	            }
 	        } else {
-	            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+	            Map<String, String> errorResponse = new HashMap<>();
+	            errorResponse.put("message", "User not found");
+
+	            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	        }
 	    } catch (Exception e) {
-	        return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	    	Map<String, String> errorResponse = new HashMap<String, String>(); // Instanciation d'une HashMap typée avec spécification des types
+	        errorResponse.put("message", "An error occurred: " + e.getMessage());
+
+	        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
+
 
 }

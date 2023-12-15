@@ -14,8 +14,8 @@ public class PatientService {
 	public Patient getPatient(String email) {
 		return this.repo.findByEmail(email);
 	}
-	public int save(Patient u) {
-		return this.repo.save(u).getId();
+	public String save(Patient u) {
+		return this.repo.save(u).getEmail();
 	}
 	public boolean exist(String email) {
 		return this.repo.existsByEmail(email);

@@ -3,7 +3,9 @@ package com.chedi.docteur.contoller;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +38,21 @@ public class RendezvousController {
 	public ResponseEntity<Object> allrendezvousBymedecin(@PathVariable int id) {
 	    try {
 	        List<Rendezvous> allRendezvous = this.rendezvousserv.getBymededin(id);
-	        if (allRendezvous != null) {
-	            return new ResponseEntity<>(allRendezvous, HttpStatus.OK);
+	        if (allRendezvous != null && !allRendezvous.isEmpty()) {
+	            Map<String, Object> response = new HashMap<>();
+	            response.put("message", "Rendezvous found for the medecin");
+	            response.put("rendezvousList", allRendezvous);
+	            return new ResponseEntity<>(response, HttpStatus.OK);
 	        } else {
-	            return new ResponseEntity<>("rendezvous not found", HttpStatus.NOT_FOUND);
+	            Map<String, String> response = new HashMap<>();
+	            response.put("message", "Aucun rendezvous pour ce medecin");
+	            return new ResponseEntity<>(response, HttpStatus.OK);
 	        }
 	    } catch (Exception e) {
 	        return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
 	}
+
 	@GetMapping("/getAll")
 	public List<Rendezvous> getAll() {
 		return this.rendezvousserv.getAll();
@@ -58,7 +66,10 @@ public class RendezvousController {
 		   try {  
 			   System.out.print("date="+rdv.getDateRendezVous());
 		         this.rendezvousserv.save(rdv);
-		         return ResponseEntity.ok("rendez vous was saved");
+		         Map<String, String> successResponse = new HashMap<>();
+	                successResponse.put("message", "rendezvous saved");
+
+	                return new ResponseEntity<>(successResponse, HttpStatus.OK);
 		    } catch (Exception e) {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
 		    }

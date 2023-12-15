@@ -22,6 +22,6 @@ public interface RendezvousRepository extends JpaRepository<Rendezvous, Integer>
 	 @Query("SELECT DISTINCT r.patient FROM Rendezvous r WHERE r.medecin.id = :medecinId")
 	    List<Patient> findAllPatientsForMedecin(@Param("medecinId") Integer medecinId);
 	 List<Rendezvous> findAllByPatientId(Integer patientId);
-	 @Query("SELECT r FROM Rendezvous r WHERE r.medecin.id = :medecinId AND r.validation = 'accepte'")
+	 @Query("SELECT r FROM Rendezvous r WHERE r.medecin.id = :medecinId AND r.validation = 'accepté'")
 	    List<Rendezvous> findRendezvousWithValidationAccepteForMedecin(@Param("medecinId") Integer medecinId);
 }
